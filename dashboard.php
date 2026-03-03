@@ -161,7 +161,7 @@ if ($role === "Admin" || $role === "Manager") {
         <div class="col-md-4 col-lg-2">
             <div class="card stat-card kpi-today">
                 <div>
-                    <p class="stat-label">Today's Expense</p>
+                    <p class="stat-label">Today Expense</p>
                     <p class="stat-value counter" data-target="<?php echo (float)$totals["today_total"]; ?>">Rs 0.00</p>
                 </div>
                 <div class="stat-icon"><i class="fa-solid fa-calendar-day"></i></div>
