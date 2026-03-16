@@ -62,6 +62,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["add_expense"])) {
 
     $expenseDate = clean_input($_POST["expense_date"] ?? "");
     $category = clean_input($_POST["category"] ?? "");
+    $partyName = clean_input($_POST["party_name"] ?? "");
     $amount = (float)($_POST["amount"] ?? 0);
     $paymentMode = clean_input($_POST["payment_mode"] ?? "");
     $description = clean_input($_POST["description"] ?? "");
@@ -106,13 +107,14 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["add_expense"])) {
 
     if (!$error) {
         $stmt = $conn->prepare(
-            "INSERT INTO expenses (user_id, expense_date, category, amount, payment_mode, description, bill_file)
-             VALUES (:user_id, :expense_date, :category, :amount, :payment_mode, :description, :bill_file)"
+            "INSERT INTO expenses (user_id, expense_date, category, party_name, amount, payment_mode, description, bill_file)
+             VALUES (:user_id, :expense_date, :category, :party_name, :amount, :payment_mode, :description, :bill_file)"
         );
         $stmt->execute([
             "user_id" => $userId,
             "expense_date" => $expenseDate,
             "category" => $category,
+            "party_name" => $partyName ?: null,
             "amount" => $amount,
             "payment_mode" => $paymentMode,
             "description" => $description ?: null,
@@ -183,6 +185,10 @@ require_once __DIR__ . "/includes/sidebar.php";
             </select>
         </div>
         <div class="col-md-2">
+            <label class="form-label">Party Name</label>
+            <input type="text" class="form-control" name="party_name" placeholder="Vendor/Person name">
+        </div>
+        <div class="col-md-2">
             <label class="form-label">Amount</label>
             <input type="number" step="0.01" min="0.01" class="form-control" name="amount" required>
         </div>
@@ -230,6 +236,7 @@ require_once __DIR__ . "/includes/sidebar.php";
                 <?php if ($isPrivileged): ?><th>Employee</th><?php endif; ?>
                 <th>Date</th>
                 <th>Category</th>
+                <th>Party Name</th>
                 <th>Amount</th>
                 <th>Mode</th>
                 <th>Status</th>
@@ -244,6 +251,7 @@ require_once __DIR__ . "/includes/sidebar.php";
                     <?php if ($isPrivileged): ?><td><?php echo clean_input($exp["name"]); ?></td><?php endif; ?>
                     <td><?php echo clean_input($exp["expense_date"]); ?></td>
                     <td><?php echo clean_input($exp["category"]); ?></td>
+                    <td><?php echo clean_input((string)$exp["party_name"]); ?></td>
                     <td>Rs <?php echo formatCurrency($exp["amount"]); ?></td>
                     <td><?php echo clean_input($exp["payment_mode"]); ?></td>
                     <td>

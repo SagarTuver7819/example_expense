@@ -62,6 +62,7 @@ require_once __DIR__ . "/includes/sidebar.php";
                 <th>Employee</th>
                 <th>Date</th>
                 <th>Category</th>
+                <th>Party Name</th>
                 <th>Amount</th>
                 <th>Status</th>
                 <th>Bill</th>
@@ -75,6 +76,7 @@ require_once __DIR__ . "/includes/sidebar.php";
                     <td><?php echo clean_input($row["name"]); ?><br><small class="text-muted"><?php echo clean_input($row["email"]); ?></small></td>
                     <td><?php echo clean_input($row["expense_date"]); ?></td>
                     <td><?php echo clean_input($row["category"]); ?></td>
+                    <td><?php echo clean_input((string)$row["party_name"]); ?></td>
                     <td>Rs <?php echo formatCurrency($row["amount"]); ?></td>
                     <td><span class="badge badge-<?php echo strtolower($row["status"]); ?>"><?php echo clean_input($row["status"]); ?></span></td>
                     <td>
