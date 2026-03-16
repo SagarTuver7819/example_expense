@@ -64,6 +64,7 @@ CREATE TABLE `expenses` (
   `user_id` int unsigned NOT NULL,
   `expense_date` date NOT NULL,
   `category` enum('Travel','Food','Office','Other') NOT NULL,
+  `party_name` varchar(255) DEFAULT NULL,
   `amount` decimal(12,2) NOT NULL,
   `payment_mode` enum('Cash','UPI','Card') NOT NULL,
   `description` text DEFAULT NULL,

@@ -27,7 +27,7 @@ if (!empty($_GET["to_date"])) {
     $params["to_date"] = clean_input($_GET["to_date"]);
 }
 
-$sql = "SELECT e.id, e.expense_date, e.category, e.amount, e.payment_mode, e.status, e.approval_comment, u.name
+$sql = "SELECT e.id, e.expense_date, e.category, e.party_name, e.amount, e.payment_mode, e.status, e.approval_comment, u.name
         FROM expenses e
         INNER JOIN users u ON u.id = e.user_id";
 if ($where) {
@@ -45,9 +45,9 @@ if (!empty($_GET["export"]) && hasPermission($conn, "export_reports")) {
         header("Content-Type: text/csv; charset=utf-8");
         header("Content-Disposition: attachment; filename=expense_report_" . date("Ymd_His") . ".csv");
         $out = fopen("php://output", "w");
-        fputcsv($out, ["ID", "Date", "Employee", "Category", "Amount", "Payment", "Status", "Comment"]);
+        fputcsv($out, ["ID", "Date", "Employee", "Category", "Party Name", "Amount", "Payment", "Status", "Comment"]);
         foreach ($rows as $r) {
-            fputcsv($out, [$r["id"], $r["expense_date"], $r["name"], $r["category"], $r["amount"], $r["payment_mode"], $r["status"], $r["approval_comment"]]);
+            fputcsv($out, [$r["id"], $r["expense_date"], $r["name"], $r["category"], $r["party_name"], $r["amount"], $r["payment_mode"], $r["status"], $r["approval_comment"]]);
         }
         fclose($out);
         exit();
@@ -55,9 +55,9 @@ if (!empty($_GET["export"]) && hasPermission($conn, "export_reports")) {
     if ($export === "pdf") {
         header("Content-Type: text/html; charset=utf-8");
         echo "<h3>Ocean Expense Report</h3>";
-        echo "<table border='1' cellpadding='6' cellspacing='0'><tr><th>ID</th><th>Date</th><th>Employee</th><th>Category</th><th>Amount</th><th>Status</th></tr>";
+        echo "<table border='1' cellpadding='6' cellspacing='0'><tr><th>ID</th><th>Date</th><th>Employee</th><th>Category</th><th>Party Name</th><th>Amount</th><th>Status</th></tr>";
         foreach ($rows as $r) {
-            echo "<tr><td>" . (int)$r["id"] . "</td><td>" . clean_input($r["expense_date"]) . "</td><td>" . clean_input($r["name"]) . "</td><td>" . clean_input($r["category"]) . "</td><td>" . formatCurrency($r["amount"]) . "</td><td>" . clean_input($r["status"]) . "</td></tr>";
+            echo "<tr><td>" . (int)$r["id"] . "</td><td>" . clean_input($r["expense_date"]) . "</td><td>" . clean_input($r["name"]) . "</td><td>" . clean_input($r["category"]) . "</td><td>" . clean_input($r["party_name"]) . "</td><td>" . formatCurrency($r["amount"]) . "</td><td>" . clean_input($r["status"]) . "</td></tr>";
         }
         echo "</table><script>window.print();</script>";
         exit();
@@ -120,7 +120,7 @@ require_once __DIR__ . "/includes/sidebar.php";
     </div>
     <div class="table-responsive">
         <table class="table table-custom">
-            <thead><tr><th>ID</th><th>Date</th><th>Employee</th><th>Category</th><th>Amount</th><th>Mode</th><th>Status</th><th>Comment</th></tr></thead>
+            <thead><tr><th>ID</th><th>Date</th><th>Employee</th><th>Category</th><th>Party Name</th><th>Amount</th><th>Mode</th><th>Status</th><th>Comment</th></tr></thead>
             <tbody>
             <?php foreach ($rows as $r): ?>
                 <tr>
@@ -128,6 +128,7 @@ require_once __DIR__ . "/includes/sidebar.php";
                     <td><?php echo clean_input($r["expense_date"]); ?></td>
                     <td><?php echo clean_input($r["name"]); ?></td>
                     <td><?php echo clean_input($r["category"]); ?></td>
+                    <td><?php echo clean_input((string)$r["party_name"]); ?></td>
                     <td>Rs <?php echo formatCurrency($r["amount"]); ?></td>
                     <td><?php echo clean_input($r["payment_mode"]); ?></td>
                     <td><span class="badge badge-<?php echo strtolower($r["status"]); ?>"><?php echo clean_input($r["status"]); ?></span></td>
